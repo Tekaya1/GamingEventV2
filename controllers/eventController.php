@@ -29,6 +29,7 @@ class EventController {
                 'prize_pool' => isset($_POST['prize_pool']) ? (float)$_POST['prize_pool'] : 0,
                 'rules' => trim($_POST['rules']),
                 'status' => 'upcoming',
+                'creator' => $_SESSION['username'],
                 'created_by' => $_SESSION['user_id']
             ];
 

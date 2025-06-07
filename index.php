@@ -54,7 +54,7 @@ $featuredGames = ['Fortnite', 'League of Legends', 'Valorant', 'Call of Duty', '
                             <div class="flex justify-between items-start mb-4">
                                 <div>
                                     <h3 class="font-bold text-xl mb-1"><?php echo htmlspecialchars($event['title']); ?></h3>
-                                    <span class="text-sm text-gray-400"><?php echo htmlspecialchars($event['game_type']); ?></span>
+                                    <span class="text-sm text-gray-400"><?php echo htmlspecialchars($event['game_name']); ?></span>
                                 </div>
                                 <span class="bg-purple-600 text-white px-2 py-1 rounded-full text-xs">Upcoming</span>
                             </div>
@@ -102,7 +102,7 @@ $featuredGames = ['Fortnite', 'League of Legends', 'Valorant', 'Call of Duty', '
                             <div class="flex justify-between items-start mb-4">
                                 <div>
                                     <h3 class="font-bold text-xl mb-1"><?php echo htmlspecialchars($event['title']); ?></h3>
-                                    <span class="text-sm text-gray-400"><?php echo htmlspecialchars($event['game_type']); ?></span>
+                                    <span class="text-sm text-gray-400"><?php echo htmlspecialchars($event['game_name']); ?></span>
                                 </div>
                                 <span class="bg-green-600 text-white px-2 py-1 rounded-full text-xs">Live Now</span>
                             </div>

@@ -9,6 +9,8 @@ authenticate('player');
 $user = new User();
 $event = new Event();
 
+
+
 $currentUser = $user->getUserById($_SESSION['user_id']);
 // Additional validation in case user doesn't exist
 if (!$currentUser) {
@@ -107,7 +109,7 @@ $upcomingEvents = $event->getAllEvents('upcoming');
                                     <div class="flex justify-between items-start">
                                         <div>
                                             <h4 class="font-bold text-lg"><?php echo htmlspecialchars($event['title']); ?></h4>
-                                            <p class="text-gray-400 text-sm"><?php echo htmlspecialchars($event['game_type']); ?></p>
+                                            <p class="text-gray-400 text-sm"><?php echo htmlspecialchars($event['game_name']); ?></p>
                                         </div>
                                         <span class="bg-purple-600 text-white px-2 py-1 rounded-full text-xs"><?php echo htmlspecialchars($event['status']); ?></span>
                                     </div>
@@ -166,11 +168,11 @@ $upcomingEvents = $event->getAllEvents('upcoming');
                                     <?php foreach ($registeredEvents as $event): ?>
                                         <tr>
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="font-medium"><?php echo htmlspecialchars($event['title']); ?></div>
+                                                <div class="font-medium"><?php echo htmlspecialchars($event['event_title']); ?></div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-600 text-gray-300">
-                                                    <?php echo htmlspecialchars($event['game_type']); ?>
+                                                    <?php echo htmlspecialchars($event['game_name']); ?>
                                                 </span>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
@@ -179,7 +181,7 @@ $upcomingEvents = $event->getAllEvents('upcoming');
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <?php 
                                                 $statusColor = '';
-                                                switch ($event['registration_status']) {
+                                                switch ($event['status']) {
                                                     case 'registered':
                                                         $statusColor = 'bg-blue-600';
                                                         break;
@@ -194,7 +196,7 @@ $upcomingEvents = $event->getAllEvents('upcoming');
                                                 }
                                                 ?>
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?php echo $statusColor; ?> text-white">
-                                                    <?php echo ucfirst(str_replace('_', ' ', $event['registration_status'])); ?>
+                                                    <?php echo ucfirst(str_replace('_', ' ', $event['status'])); ?>
                                                 </span>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">

@@ -15,7 +15,7 @@ $popularGames = ['Fortnite', 'League of Legends', 'Valorant', 'Call of Duty', 'D
                 <div class="p-6">
                     <h3 class="text-xl font-bold mb-4">Top <?php echo htmlspecialchars($game); ?> Players</h3>
                     
-                    <?php $leaderboard = $event->getLeaderboard($game, 5); ?>
+                    <?php $leaderboard = $event->getLeaderboard(); ?>
                     <?php if (empty($leaderboard)): ?>
                         <p class="text-gray-400 text-center py-4">No data available</p>
                     <?php else: ?>

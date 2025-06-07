@@ -1,6 +1,7 @@
 <?php
 require_once '../bootstrap.php';
 require_once '../models/Event.php';
+require_once '../config/config.php';
 $event = new Event();
 $allEvents = $event->getAllEvents();
 $upcomingEvents = $event->getAllEvents('upcoming');
@@ -44,7 +45,7 @@ if (isset($_GET['id'])) {
                                     <?php echo ucfirst($singleEvent['status']); ?>
                                 </span>
                                 <span class="px-3 py-1 rounded-full bg-gray-700 text-gray-300 text-sm font-medium">
-                                    <?php echo htmlspecialchars($singleEvent['game_type']); ?>
+                                    <?php echo htmlspecialchars($singleEvent['game_name']); ?>
                                 </span>
                             </div>
                             
@@ -160,7 +161,7 @@ if (isset($_GET['id'])) {
                                                     <td class="px-6 py-4 whitespace-nowrap">
                                                         <div class="flex items-center">
                                                             <div class="flex-shrink-0 h-10 w-10">
-                                                                <img class="h-10 w-10 rounded-full" src="../assets/images/avatars/<?php echo htmlspecialchars($registration['avatar']); ?>" alt="">
+                                                                <img class="h-10 w-10 rounded-full" src="<?php echo BASE_URL; ?>assets/images/avatars/<?php echo htmlspecialchars($registration['avatar']); ?>" alt="">
                                                             </div>
                                                             <div class="ml-4">
                                                                 <div class="text-sm font-medium"><?php echo htmlspecialchars($registration['username']); ?></div>
@@ -317,7 +318,7 @@ if (isset($_GET['id'])) {
                                 <div class="flex justify-between items-start mb-4">
                                     <div>
                                         <h3 class="font-bold text-xl mb-1"><?php echo htmlspecialchars($event['title']); ?></h3>
-                                        <span class="text-sm text-gray-400"><?php echo htmlspecialchars($event['game_type']); ?></span>
+                                        <span class="text-sm text-gray-400"><?php echo htmlspecialchars($event['game_name']); ?></span>
                                     </div>
                                     <span class="bg-purple-600 text-white px-2 py-1 rounded-full text-xs">Upcoming</span>
                                 </div>
@@ -356,7 +357,7 @@ if (isset($_GET['id'])) {
                                 <div class="flex justify-between items-start mb-4">
                                     <div>
                                         <h3 class="font-bold text-xl mb-1"><?php echo htmlspecialchars($event['title']); ?></h3>
-                                        <span class="text-sm text-gray-400"><?php echo htmlspecialchars($event['game_type']); ?></span>
+                                        <span class="text-sm text-gray-400"><?php echo htmlspecialchars($event['game_name']); ?></span>
                                     </div>
                                     <span class="bg-green-600 text-white px-2 py-1 rounded-full text-xs">Ongoing</span>
                                 </div>
@@ -395,7 +396,7 @@ if (isset($_GET['id'])) {
                                 <div class="flex justify-between items-start mb-4">
                                     <div>
                                         <h3 class="font-bold text-xl mb-1"><?php echo htmlspecialchars($event['title']); ?></h3>
-                                        <span class="text-sm text-gray-400"><?php echo htmlspecialchars($event['game_type']); ?></span>
+                                        <span class="text-sm text-gray-400"><?php echo htmlspecialchars($event['game_name']); ?></span>
                                     </div>
                                     <span class="bg-purple-600 text-white px-2 py-1 rounded-full text-xs">Completed</span>
                                 </div>

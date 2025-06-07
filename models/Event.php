@@ -17,40 +17,103 @@ class Event
     }
 
     // Obtenir tous les événements avec le nom du jeu associé
-
-    public function getAllEvents()
+    
+    public function getAllEvents($status = null)
     {
-        $stmt = $this->db->query("
-        SELECT events.*, games.name AS game_name
-        FROM events
-        LEFT JOIN games ON events.game_id = games.id
-        ORDER BY events.start_date DESC
-    ");
+        if ($status !== null) {
+            $stmt = $this->db->prepare("
+                SELECT e.*, g.name AS game_name
+                FROM events e
+                INNER JOIN games g ON e.game_id = g.id
+                WHERE e.status = ?
+                ORDER BY e.start_date DESC
+            ");
+            $stmt->execute([$status]);
+            return $stmt->fetchAll();
+        } else {
+            $stmt = $this->db->query("
+                SELECT e.*, g.name AS game_name
+                FROM events e
+                INNER JOIN games g ON e.game_id = g.id
+                ORDER BY e.start_date DESC
+            ");
+            return $stmt->fetchAll();
+        }
+    }
+
+    // Récupérer les inscriptions à un événement
+    public function getEventRegistrations($eventId)
+    {
+        $stmt = $this->db->prepare("
+            SELECT r.*, u.username as username , u.avatar as avatar
+            FROM registrations r
+            INNER JOIN users u ON r.user_id = u.id
+            WHERE r.event_id = ?
+        ");
+        $stmt->execute([$eventId]);
         return $stmt->fetchAll();
     }
 
-
     // Récupérer un événement par son ID
+    //getEventById
     public function getEventById($id)
     {
         $stmt = $this->db->prepare("
             SELECT e.*, g.name AS game_name
             FROM events e
-            LEFT JOIN games g ON e.game_id = g.id
+            INNER JOIN games g ON e.game_id = g.id
             WHERE e.id = ?
         ");
         $stmt->execute([$id]);
         return $stmt->fetch();
     }
 
+    // Récupérer les inscriptions d'un utilisateur
+    public function getUserRegistrations($userId)
+    {
+        $stmt = $this->db->prepare("
+            SELECT r.*, e.title AS event_title, g.name AS game_name ,
+                   e.start_date, e.end_date, e.status
+            FROM registrations r
+            INNER JOIN events e ON r.event_id = e.id
+            INNER JOIN games g ON e.game_id = g.id
+            WHERE r.user_id = ?
+        ");
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll();
+    }
+
+    // Récupérer le classement des événements
+    public function getLeaderboard()
+    {
+        $stmt = $this->db->query("
+            SELECT e.*, g.name AS game_name
+            FROM events e
+            INNER JOIN games g ON e.game_id = g.id
+            WHERE e.status = 'completed'
+            ORDER BY e.prize_pool DESC
+            LIMIT 10
+        ");
+        return $stmt->fetchAll();
+    }
+
     // Créer un nouvel événement
     public function createEvent($data)
     {
         $stmt = $this->db->prepare("
-            INSERT INTO events (title, description, game_id, start_date, end_date, max_participants, prize_pool, rules, status, created_by)
-            VALUES (:title, :description, :game_id, :start_date, :end_date, :max_participants, :prize_pool, :rules, :status, :created_by)
+            INSERT INTO events (title, description, game_id, start_date, end_date, max_participants, prize_pool, rules, status, creator, created_by)
+            VALUES (:title, :description, :game_id, :start_date, :end_date, :max_participants, :prize_pool, :rules, :status, :creator, :created_by)
         ");
         return $stmt->execute($data);
+    }
+    //registerForEvent
+    public function registerForEvent($userId, $eventId)
+    {
+        $stmt = $this->db->prepare("
+            INSERT INTO registrations (user_id, event_id)
+            VALUES (?, ?)
+        ");
+        return $stmt->execute([$userId, $eventId]);
     }
 
     // Supprimer un événement

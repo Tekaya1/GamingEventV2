@@ -105,7 +105,7 @@ $upcomingEvents = $event->getAllEvents('upcoming');
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-600 text-gray-300">
-                                                <?php echo htmlspecialchars($event['game_type']); ?>
+                                                <?php echo htmlspecialchars($event['game_name']); ?>
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
