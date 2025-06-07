@@ -39,6 +39,7 @@ CREATE TABLE `events` (
   `prize_pool` decimal(10,2) DEFAULT NULL,
   `rules` text DEFAULT NULL,
   `status` enum('upcoming','ongoing','completed','cancelled') DEFAULT 'upcoming',
+  `creator` varchar(100) DEFAULT NULL,
   `created_by` int(11) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
