@@ -1,26 +1,21 @@
- <?php
-class Database {
-    private $host = 'localhost';
-    private $db_name = 'gaming_events';
-    private $username = 'root';
-    private $password = '';
-    private $conn;
+<?php
+$host = 'localhost';
+$db   = 'gaming_events';
+$user = 'root'; // ou 'admin' ou autre selon ta config
+$pass = '';     // ou 'root' ou autre selon ta config
+$charset = 'utf8mb4';
 
-    public function connect() {
-        $this->conn = null;
+$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 
-        try {
-            $this->conn = new PDO(
-                'mysql:host=' . $this->host . ';dbname=' . $this->db_name,
-                $this->username,
-                $this->password
-            );
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch(PDOException $e) {
-            echo 'Connection Error: ' . $e->getMessage();
-        }
+$options = [
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES   => false,
+];
 
-        return $this->conn;
-    }
+try {
+    // 🔴 CECI EST ESSENTIEL
+    $pdo = new PDO($dsn, $user, $pass, $options);
+} catch (PDOException $e) {
+    die("Erreur de connexion : " . $e->getMessage());
 }
-?>

@@ -12,7 +12,7 @@ $eventCount = count($event->getAllEvents());
 $activeEventCount = count(array_filter($event->getAllEvents(), function ($e) {
     return $e['status'] === 'upcoming' || $e['status'] === 'ongoing';
 }))
-    ?>
+?>
 
 <div class="w-full md:w-1/4">
     <div class="bg-gray-800 rounded-lg p-6 mb-6">
@@ -107,6 +107,19 @@ $activeEventCount = count(array_filter($event->getAllEvents(), function ($e) {
                     </svg>
                     <span>Settings</span>
                 </a>
+            <li>
+                <a href="<?php echo BASE_URL; ?>views/admin/games.php"
+                    class="<?php echo $currentPage === 'games.php' ? 'text-red-400' : 'text-gray-300'; ?> hover:text-white transition flex items-center space-x-2 p-2 rounded-lg <?php echo $currentPage === 'games.php' ? 'bg-gray-700' : ''; ?>">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9.75 17a2.25 2.25 0 01-2.25-2.25V9.75A2.25 2.25 0 019.75 7.5h4.5a2.25 2.25 0 012.25 2.25v5a2.25 2.25 0 01-2.25 2.25h-4.5zM6 12h.008v.008H6V12zM18 12h.008v.008H18V12z" />
+                    </svg>
+                    <span>Manage Games</span>
+                </a>
+            </li>
+
+
             </li>
         </ul>
     </div>

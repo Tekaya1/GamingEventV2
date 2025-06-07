@@ -12,19 +12,14 @@ class User
 
     public function __construct()
     {
-        try {
-            // Instantiate Database and get connection
-            $database = new Database();
-            $this->db = $database->connect();
-            if ($this->db === null) {
-                throw new Exception('Failed to connect to the database');
-            }
-        } catch (Exception $e) {
-            // Log the error for debugging
-            error_log("User class constructor error: " . $e->getMessage());
-            // Optionally, handle the error gracefully (e.g., redirect or throw)
-            throw new Exception('Database connection failed. Please try again later.');
+        // Utiliser le PDO défini globalement
+        global $pdo;
+
+        if (!$pdo) {
+            throw new Exception('Database connection not initialized.');
         }
+
+        $this->db = $pdo;
     }
 
     public function connect()
@@ -32,7 +27,6 @@ class User
         return $this->db;
     }
 
-    // Register new user
     public function register($username, $email, $password, $role = 'player')
     {
         $hashed_password = password_hash($password, PASSWORD_BCRYPT);
@@ -49,7 +43,6 @@ class User
         return $stmt->execute();
     }
 
-    // Login user
     public function login($username, $password)
     {
         $query = 'SELECT * FROM users WHERE username = :username';
@@ -76,7 +69,6 @@ class User
         return false;
     }
 
-    // Get all users (admin only)
     public function getAllUsers()
     {
         $query = 'SELECT id, username, email, role, avatar, created_at FROM users';
@@ -86,8 +78,6 @@ class User
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
-    // Get user by ID
     public function getUserById($id)
     {
         $query = 'SELECT * FROM users WHERE id = :id';
@@ -98,7 +88,6 @@ class User
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // get user count 
     public function getUserCount()
     {
         $query = 'SELECT COUNT(*) as count FROM users';
@@ -108,7 +97,6 @@ class User
         return $stmt->fetchColumn();
     }
 
-    // Update user profile
     public function updateProfile($id, $username, $email, $avatar = null)
     {
         $query = 'UPDATE users SET username = :username, email = :email';
@@ -125,7 +113,6 @@ class User
         return $stmt->execute($params);
     }
 
-    // Check if username exists
     public function usernameExists($username)
     {
         $query = 'SELECT id FROM users WHERE username = :username';
@@ -136,7 +123,6 @@ class User
         return $stmt->rowCount() > 0;
     }
 
-    // Check if email exists
     public function emailExists($email)
     {
         $query = 'SELECT id FROM users WHERE email = :email';
@@ -148,25 +134,9 @@ class User
     }
 
     // Getters
-    public function getId()
-    {
-        return $this->id;
-    }
-    public function getUsername()
-    {
-        return $this->username;
-    }
-    public function getEmail()
-    {
-        return $this->email;
-    }
-    public function getRole()
-    {
-        return $this->role;
-    }
-    public function getAvatar()
-    {
-        return $this->avatar;
-    }
+    public function getId()       { return $this->id; }
+    public function getUsername() { return $this->username; }
+    public function getEmail()    { return $this->email; }
+    public function getRole()     { return $this->role; }
+    public function getAvatar()   { return $this->avatar; }
 }
-?>
