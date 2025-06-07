@@ -1,10 +1,16 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start(); // ⬅️ session démarrée uniquement si elle n'existe pas encore
+}
+
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../models/Event.php';
 require_once __DIR__ . '/../config/config.php';
+
 $user = new User();
 $event = new Event();
+
 
 // Check if user is logged in
 $isLoggedIn = isset($_SESSION['user_id']);
@@ -12,9 +18,7 @@ $currentUser = null;
 
 if ($isLoggedIn) {
     $currentUser = $user->getUserById($_SESSION['user_id']);
-    // Check if user was found
     if ($currentUser === false) {
-        // Invalid user ID in session, log out the user
         session_unset();
         session_destroy();
         $isLoggedIn = false;
@@ -62,7 +66,7 @@ if ($isLoggedIn) {
                 <div class="flex items-center space-x-4">
                     <?php if ($isLoggedIn && $currentUser): ?>
                         <div class="flex items-center space-x-2">
-                            <img src="assets/images/avatars/<?php echo htmlspecialchars($currentUser['avatar'] ?? 'default.png'); ?>" 
+                            <img src="<?php echo BASE_URL . 'assets/images/avatars/' . htmlspecialchars($currentUser['avatar'] ?? 'default.png'); ?>" 
                                  alt="Avatar" class="w-8 h-8 rounded-full border-2 border-purple-500">
                             <span class="text-sm"><?php echo htmlspecialchars($currentUser['username']); ?></span>
                         </div>

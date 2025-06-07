@@ -7,10 +7,10 @@
                     <p class="text-gray-400 text-sm">The ultimate gaming event platform</p>
                 </div>
                 <div class="flex space-x-6">
-                    <a href="#" class="text-gray-400 hover:text-white transition">About</a>
-                    <a href="#" class="text-gray-400 hover:text-white transition">Contact</a>
-                    <a href="#" class="text-gray-400 hover:text-white transition">Terms</a>
-                    <a href="#" class="text-gray-400 hover:text-white transition">Privacy</a>
+                    <a href="#" aria-label="About" class="text-gray-400 hover:text-white transition">About</a>
+                    <a href="#" aria-label="Contact" class="text-gray-400 hover:text-white transition">Contact</a>
+                    <a href="#" aria-label="Terms" class="text-gray-400 hover:text-white transition">Terms</a>
+                    <a href="#" aria-label="Privacy" class="text-gray-400 hover:text-white transition">Privacy</a>
                 </div>
             </div>
             <div class="mt-8 text-center text-gray-500 text-sm">
