@@ -34,7 +34,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
                         <?php echo $_GET['action'] === 'create' ? 'Create New Event' : 'Edit Event'; ?>
                     </h2>
 
-                    <form action="../../controllers/eventController.php?action=<?php echo $_GET['action']; ?>" method="POST">
+                    <form action="../../controllers/eventController.php?action=<?php echo $_GET['action']; ?>"
+                        method="POST">
                         <?php if ($_GET['action'] === 'edit'): ?>
                             <input type="hidden" name="id" value="<?php echo $editEvent['id']; ?>">
                         <?php endif; ?>
@@ -42,11 +43,14 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <div>
                                 <label class="block text-gray-300 text-sm font-bold mb-2" for="title">Event Title</label>
-                                <input class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="title" name="title" type="text" required value="<?php echo isset($editEvent['title']) ? htmlspecialchars($editEvent['title']) : ''; ?>">
+                                <input class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="title"
+                                    name="title" type="text" required
+                                    value="<?php echo isset($editEvent['title']) ? htmlspecialchars($editEvent['title']) : ''; ?>">
                             </div>
                             <div>
                                 <label class="block text-gray-300 text-sm font-bold mb-2" for="game_id">Game</label>
-                                <select id="game_id" name="game_id" required class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white">
+                                <select id="game_id" name="game_id" required
+                                    class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white">
                                     <option value="">-- Select a game --</option>
                                     <?php foreach ($games as $game): ?>
                                         <option value="<?php echo $game['id']; ?>" <?php echo (isset($editEvent['game_id']) && $editEvent['game_id'] == $game['id']) ? 'selected' : ''; ?>>
@@ -59,35 +63,53 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
 
                         <div class="mb-6">
                             <label class="block text-gray-300 text-sm font-bold mb-2" for="description">Description</label>
-                            <textarea class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="description" name="description" rows="4" required><?php echo isset($editEvent['description']) ? htmlspecialchars($editEvent['description']) : ''; ?></textarea>
+                            <textarea class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="description"
+                                name="description" rows="4"
+                                required><?php echo isset($editEvent['description']) ? htmlspecialchars($editEvent['description']) : ''; ?></textarea>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <div>
-                                <label class="block text-gray-300 text-sm font-bold mb-2" for="start_date">Start Date & Time</label>
-                                <input class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="start_date" name="start_date" type="datetime-local" value="<?php echo isset($editEvent['start_date']) ? date('Y-m-d\TH:i', strtotime($editEvent['start_date'])) : ''; ?>" required>
+                                <label class="block text-gray-300 text-sm font-bold mb-2" for="start_date">Start Date &
+                                    Time</label>
+                                <input class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="start_date"
+                                    name="start_date" type="datetime-local"
+                                    value="<?php echo isset($editEvent['start_date']) ? date('Y-m-d\TH:i', strtotime($editEvent['start_date'])) : ''; ?>"
+                                    required>
                             </div>
                             <div>
-                                <label class="block text-gray-300 text-sm font-bold mb-2" for="end_date">End Date & Time</label>
-                                <input class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="end_date" name="end_date" type="datetime-local" value="<?php echo isset($editEvent['end_date']) ? date('Y-m-d\TH:i', strtotime($editEvent['end_date'])) : ''; ?>" required>
+                                <label class="block text-gray-300 text-sm font-bold mb-2" for="end_date">End Date &
+                                    Time</label>
+                                <input class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="end_date"
+                                    name="end_date" type="datetime-local"
+                                    value="<?php echo isset($editEvent['end_date']) ? date('Y-m-d\TH:i', strtotime($editEvent['end_date'])) : ''; ?>"
+                                    required>
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <div>
-                                <label class="block text-gray-300 text-sm font-bold mb-2" for="max_participants">Max Participants</label>
-                                <input class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="max_participants" name="max_participants" type="number" min="1" value="<?php echo isset($editEvent['max_participants']) ? $editEvent['max_participants'] : ''; ?>">
+                                <label class="block text-gray-300 text-sm font-bold mb-2" for="max_participants">Max
+                                    Participants</label>
+                                <input class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white"
+                                    id="max_participants" name="max_participants" type="number" min="1"
+                                    value="<?php echo isset($editEvent['max_participants']) ? $editEvent['max_participants'] : ''; ?>">
                             </div>
                             <div>
-                                <label class="block text-gray-300 text-sm font-bold mb-2" for="prize_pool">Prize Pool ($)</label>
-                                <input class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="prize_pool" name="prize_pool" type="number" min="0" step="0.01" value="<?php echo isset($editEvent['prize_pool']) ? $editEvent['prize_pool'] : '0'; ?>" required>
+                                <label class="block text-gray-300 text-sm font-bold mb-2" for="prize_pool">Prize Pool
+                                    ($)</label>
+                                <input class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="prize_pool"
+                                    name="prize_pool" type="number" min="0" step="0.01"
+                                    value="<?php echo isset($editEvent['prize_pool']) ? $editEvent['prize_pool'] : '0'; ?>"
+                                    required>
                             </div>
                         </div>
 
                         <?php if ($_GET['action'] === 'edit'): ?>
                             <div class="mb-6">
                                 <label class="block text-gray-300 text-sm font-bold mb-2" for="status">Status</label>
-                                <select class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="status" name="status" required>
+                                <select class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="status"
+                                    name="status" required>
                                     <option value="upcoming" <?php echo (isset($editEvent['status']) && $editEvent['status'] === 'upcoming') ? 'selected' : ''; ?>>Upcoming</option>
                                     <option value="ongoing" <?php echo (isset($editEvent['status']) && $editEvent['status'] === 'ongoing') ? 'selected' : ''; ?>>Ongoing</option>
                                     <option value="completed" <?php echo (isset($editEvent['status']) && $editEvent['status'] === 'completed') ? 'selected' : ''; ?>>Completed</option>
@@ -98,12 +120,67 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
 
                         <div class="mb-6">
                             <label class="block text-gray-300 text-sm font-bold mb-2" for="rules">Rules</label>
-                            <textarea class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="rules" name="rules" rows="6" required><?php echo isset($editEvent['rules']) ? htmlspecialchars($editEvent['rules']) : ''; ?></textarea>
+                            <textarea class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="rules"
+                                name="rules" rows="6"
+                                required><?php echo isset($editEvent['rules']) ? htmlspecialchars($editEvent['rules']) : ''; ?></textarea>
+                        </div>
+                        <!-- Add this section after the rules textarea in your form -->
+                        <div class="mb-6">
+                            <label class="block text-gray-300 text-sm font-bold mb-2" for="video_type">Video Type</label>
+                            <select class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="video_type"
+                                name="video_type">
+                                <option value="">-- No Video --</option>
+                                <option value="youtube" <?php echo (isset($editEvent['video_type']) && $editEvent['video_type'] === 'youtube' ? 'selected' : ''); ?>>YouTube</option>
+                                <option value="twitch" <?php echo (isset($editEvent['video_type']) && $editEvent['video_type'] === 'twitch' ? 'selected' : ''); ?>>Twitch</option>
+                                <option value="custom" <?php echo (isset($editEvent['video_type']) && $editEvent['video_type'] === 'custom' ? 'selected' : ''); ?>>Custom URL</option>
+                            </select>
                         </div>
 
+                        <div class="mb-6 video-url-field"
+                            style="<?php echo (!isset($editEvent['video_type']) || empty($editEvent['video_type']) ? 'display: none;' : ''); ?>">
+                            <label class="block text-gray-300 text-sm font-bold mb-2" for="video_url">Video URL/Embed
+                                Code</label>
+                            <input class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="video_url"
+                                name="video_url" type="text"
+                                value="<?php echo isset($editEvent['video_url']) ? htmlspecialchars($editEvent['video_url']) : ''; ?>">
+                            <p class="text-gray-400 text-xs mt-1">
+                                For YouTube: Enter video ID (e.g., dQw4w9WgXcQ) or full URL<br>
+                                For Twitch: Enter video ID or full URL<br>
+                                For Custom: Enter full embed code
+                            </p>
+                        </div>
+
+                        <div class="mb-6 video-thumbnail-field"
+                            style="<?php echo (!isset($editEvent['video_type']) || empty($editEvent['video_type']) ? 'display: none;' : ''); ?>">
+                            <label class="block text-gray-300 text-sm font-bold mb-2" for="video_thumbnail">Video
+                                Thumbnail</label>
+                            <input class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="video_thumbnail"
+                                name="video_thumbnail" type="text"
+                                value="<?php echo isset($editEvent['video_thumbnail']) ? htmlspecialchars($editEvent['video_thumbnail']) : ''; ?>">
+                            <p class="text-gray-400 text-xs mt-1">URL to a custom thumbnail image (optional)</p>
+                        </div>
+
+                        <!-- Add this JavaScript at the bottom of the page -->
+                        <script>
+                            document.getElementById('video_type').addEventListener('change', function () {
+                                const videoUrlField = document.querySelector('.video-url-field');
+                                const videoThumbnailField = document.querySelector('.video-thumbnail-field');
+
+                                if (this.value) {
+                                    videoUrlField.style.display = 'block';
+                                    videoThumbnailField.style.display = 'block';
+                                } else {
+                                    videoUrlField.style.display = 'none';
+                                    videoThumbnailField.style.display = 'none';
+                                }
+                            });
+                        </script>
+
                         <div class="flex justify-end space-x-4">
-                            <a href="events.php" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition">Cancel</a>
-                            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition">
+                            <a href="events.php"
+                                class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition">Cancel</a>
+                            <button type="submit"
+                                class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition">
                                 <?php echo $_GET['action'] === 'create' ? 'Create Event' : 'Update Event'; ?>
                             </button>
                         </div>
@@ -135,8 +212,11 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
                                     <td class="px-6 py-4"><?php echo date('Y-m-d H:i', strtotime($ev['end_date'])); ?></td>
                                     <td class="px-6 py-4"><?php echo ucfirst($ev['status']); ?></td>
                                     <td class="px-6 py-4 space-x-2">
-                                        <a href="events.php?action=edit&id=<?php echo $ev['id']; ?>" class="text-yellow-400 hover:underline">Edit</a>
-                                        <form action="../../controllers/eventController.php?action=delete" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this event?');">
+                                        <a href="events.php?action=edit&id=<?php echo $ev['id']; ?>"
+                                            class="text-yellow-400 hover:underline">Edit</a>
+                                        <form action="../../controllers/eventController.php?action=delete" method="POST"
+                                            class="inline"
+                                            onsubmit="return confirm('Are you sure you want to delete this event?');">
                                             <input type="hidden" name="id" value="<?php echo $ev['id']; ?>">
                                             <button type="submit" class="text-red-500 hover:underline">Delete</button>
                                         </form>

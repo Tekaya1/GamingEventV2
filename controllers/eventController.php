@@ -11,66 +11,135 @@ class EventController {
         $this->user = new User();
     }
 
-    public function createEvent() {
-        session_start();
-        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-            header('Location: ../views/auth/login.php');
-            exit();
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = [
-                'title' => trim($_POST['title']),
-                'description' => trim($_POST['description']),
-                'game_id' => isset($_POST['game_id']) ? (int)$_POST['game_id'] : null,
-                'start_date' => trim($_POST['start_date']),
-                'end_date' => trim($_POST['end_date']),
-                'max_participants' => isset($_POST['max_participants']) ? (int)$_POST['max_participants'] : null,
-                'prize_pool' => isset($_POST['prize_pool']) ? (float)$_POST['prize_pool'] : 0,
-                'rules' => trim($_POST['rules']),
-                'status' => 'upcoming',
-                'creator' => $_SESSION['username'],
-                'created_by' => $_SESSION['user_id']
-            ];
-
-            if ($this->event->createEvent($data)) {
-                header('Location: ../views/admin/events.php?success=created');
-            } else {
-                header('Location: ../views/admin/events.php?action=create&error=failed');
-            }
-            exit();
-        }
+  public function createEvent() {
+    session_start();
+    if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+        header('Location: ../views/auth/login.php');
+        exit();
     }
 
-    public function updateEvent() {
-        session_start();
-        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-            header('Location: ../views/auth/login.php');
-            exit();
-        }
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Process video data
+        $video_url = !empty($_POST['video_url']) ? trim($_POST['video_url']) : null;
+        $video_type = !empty($_POST['video_type']) ? trim($_POST['video_type']) : null;
+        $video_thumbnail = !empty($_POST['video_thumbnail']) ? trim($_POST['video_thumbnail']) : null;
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = (int)$_POST['id'];
-            $data = [
-                'title' => trim($_POST['title']),
-                'description' => trim($_POST['description']),
-                'game_id' => isset($_POST['game_id']) ? (int)$_POST['game_id'] : null,
-                'start_date' => trim($_POST['start_date']),
-                'end_date' => trim($_POST['end_date']),
-                'max_participants' => isset($_POST['max_participants']) ? (int)$_POST['max_participants'] : null,
-                'prize_pool' => isset($_POST['prize_pool']) ? (float)$_POST['prize_pool'] : 0,
-                'rules' => trim($_POST['rules']),
-                'status' => trim($_POST['status'])
-            ];
-
-            if ($this->event->updateEvent($id, $data)) {
-                header('Location: ../views/admin/events.php?success=updated');
-            } else {
-                header("Location: ../views/admin/events.php?action=edit&id={$id}&error=failed");
+        // Validate video data if provided
+        if ($video_url && $video_type) {
+            if ($video_type === 'youtube') {
+                // Extract YouTube ID from URL if full URL is provided
+                if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/([^"&?\/\s]{11})/', $video_url, $matches)) {
+                    $video_url = $matches[1];
+                }
+                // Validate it's a valid YouTube ID (11 characters)
+                if (strlen($video_url) !== 11) {
+                    header('Location: ../views/admin/events.php?action=create&error=invalid_youtube');
+                    exit();
+                }
+            } elseif ($video_type === 'twitch') {
+                // Extract Twitch video ID if full URL is provided
+                if (preg_match('/twitch\.tv\/videos\/(\d+)/i', $video_url, $matches)) {
+                    $video_url = $matches[1];
+                }
+                // Validate it's a numeric ID
+                if (!is_numeric($video_url)) {
+                    header('Location: ../views/admin/events.php?action=create&error=invalid_twitch');
+                    exit();
+                }
             }
-            exit();
+            // For custom videos, we'll accept whatever embed code is provided
         }
+
+        $data = [
+            'title' => trim($_POST['title']),
+            'description' => trim($_POST['description']),
+            'game_id' => isset($_POST['game_id']) ? (int)$_POST['game_id'] : null,
+            'start_date' => trim($_POST['start_date']),
+            'end_date' => trim($_POST['end_date']),
+            'max_participants' => isset($_POST['max_participants']) ? (int)$_POST['max_participants'] : null,
+            'prize_pool' => isset($_POST['prize_pool']) ? (float)$_POST['prize_pool'] : 0,
+            'rules' => trim($_POST['rules']),
+            'status' => 'upcoming',
+            'creator' => $_SESSION['username'],
+            'created_by' => $_SESSION['user_id'],
+            'video_url' => $video_url,
+            'video_type' => $video_type,
+            'video_thumbnail' => $video_thumbnail
+        ];
+
+        if ($this->event->createEvent($data)) {
+            header('Location: ../views/admin/events.php?success=created');
+        } else {
+            header('Location: ../views/admin/events.php?action=create&error=failed');
+        }
+        exit();
     }
+}
+
+public function updateEvent() {
+    session_start();
+    if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+        header('Location: ../views/auth/login.php');
+        exit();
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $id = (int)$_POST['id'];
+        
+        // Process video data
+        $video_url = !empty($_POST['video_url']) ? trim($_POST['video_url']) : null;
+        $video_type = !empty($_POST['video_type']) ? trim($_POST['video_type']) : null;
+        $video_thumbnail = !empty($_POST['video_thumbnail']) ? trim($_POST['video_thumbnail']) : null;
+
+        // Validate video data if provided
+        if ($video_url && $video_type) {
+            if ($video_type === 'youtube') {
+                // Extract YouTube ID from URL if full URL is provided
+                if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/([^"&?\/\s]{11})/', $video_url, $matches)) {
+                    $video_url = $matches[1];
+                }
+                // Validate it's a valid YouTube ID (11 characters)
+                if (strlen($video_url) !== 11) {
+                    header("Location: ../views/admin/events.php?action=edit&id={$id}&error=invalid_youtube");
+                    exit();
+                }
+            } elseif ($video_type === 'twitch') {
+                // Extract Twitch video ID if full URL is provided
+                if (preg_match('/twitch\.tv\/videos\/(\d+)/i', $video_url, $matches)) {
+                    $video_url = $matches[1];
+                }
+                // Validate it's a numeric ID
+                if (!is_numeric($video_url)) {
+                    header("Location: ../views/admin/events.php?action=edit&id={$id}&error=invalid_twitch");
+                    exit();
+                }
+            }
+            // For custom videos, we'll accept whatever embed code is provided
+        }
+
+        $data = [
+            'title' => trim($_POST['title']),
+            'description' => trim($_POST['description']),
+            'game_id' => isset($_POST['game_id']) ? (int)$_POST['game_id'] : null,
+            'start_date' => trim($_POST['start_date']),
+            'end_date' => trim($_POST['end_date']),
+            'max_participants' => isset($_POST['max_participants']) ? (int)$_POST['max_participants'] : null,
+            'prize_pool' => isset($_POST['prize_pool']) ? (float)$_POST['prize_pool'] : 0,
+            'rules' => trim($_POST['rules']),
+            'status' => trim($_POST['status']),
+            'video_url' => $video_url,
+            'video_type' => $video_type,
+            'video_thumbnail' => $video_thumbnail
+        ];
+
+        if ($this->event->updateEvent($id, $data)) {
+            header('Location: ../views/admin/events.php?success=updated');
+        } else {
+            header("Location: ../views/admin/events.php?action=edit&id={$id}&error=failed");
+        }
+        exit();
+    }
+}
 
     public function deleteEvent() {
         session_start();

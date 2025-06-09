@@ -8,16 +8,12 @@ class UserController
 
     public function __construct()
     {
-        try {
-            $this->user = new User();
-        } catch (Exception $e) {
-            error_log("UserController constructor error: " . $e->getMessage());
-            header('Location: ../views/admin/users.php?error=database_connection_failed');
-            exit();
-        }
+        $this->user = new User();
+
     }
 
-    public function updateUser() {
+    public function updateUser()
+    {
         session_start();
         // Check if user is admin
         if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
@@ -26,11 +22,11 @@ class UserController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = (int)$_POST['id'];
+            $id = (int) $_POST['id'];
             $username = trim($_POST['username']);
             $email = trim($_POST['email']);
             $role = trim($_POST['role']);
-            
+
             // Handle avatar upload
             $avatar = null;
             if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
@@ -38,21 +34,21 @@ class UserController
                 $fileExt = pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION);
                 $fileName = uniqid() . '.' . $fileExt;
                 $uploadFile = $uploadDir . $fileName;
-                
+
                 if (move_uploaded_file($_FILES['avatar']['tmp_name'], $uploadFile)) {
                     $avatar = $fileName;
                 }
             }
-            
+
             // Get current user data
             $currentUser = $this->user->getUserById($id);
-            
+
             // Check if username is changed and already exists
             if ($currentUser['username'] !== $username && $this->user->usernameExists($username)) {
                 header('Location: ../views/admin/users.php?id=' . $id . '&error=username_taken');
                 exit();
             }
-            
+
             // Check if email is changed and already exists
             if ($currentUser['email'] !== $email && $this->user->emailExists($email)) {
                 header('Location: ../views/admin/users.php?id=' . $id . '&error=email_taken');
@@ -69,7 +65,7 @@ class UserController
                     $stmt->bindParam(':id', $id);
                     $stmt->execute();
                 }
-                
+
                 header('Location: ../views/admin/users.php?success=updated');
                 exit();
             } else {

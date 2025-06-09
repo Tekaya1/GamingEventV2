@@ -55,6 +55,7 @@ if ($isLoggedIn) {
                     <nav class="hidden md:flex space-x-6">
                         <a href="<?php echo BASE_URL; ?>views/events.php" class="text-gray-300 hover:text-white transition">Events</a>
                         <a href="<?php echo BASE_URL; ?>views/leaderboard.php" class="text-gray-300 hover:text-white transition">Leaderboard</a>
+                        <a href="<?php echo BASE_URL; ?>views/player/teams.php" class="text-gray-300 hover:text-white transition">My Teams</a>
                         <?php if ($isLoggedIn && $currentUser && $currentUser['role'] === 'player'): ?>
                             <a href="<?php echo BASE_URL; ?>views/player/dashboard.php" class="text-gray-300 hover:text-white transition">My Dashboard</a>
                         <?php endif; ?>

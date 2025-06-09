@@ -47,6 +47,14 @@ if (isset($_GET['id'])) {
                                 <span class="px-3 py-1 rounded-full bg-gray-700 text-gray-300 text-sm font-medium">
                                     <?php echo htmlspecialchars($singleEvent['game_name']); ?>
                                 </span>
+                                <?php if (!empty($singleEvent['video_url'])): ?>
+                                    <span class="px-3 py-1 rounded-full bg-red-600 text-white text-sm font-medium flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"></path>
+                                        </svg>
+                                        Video
+                                    </span>
+                                <?php endif; ?>
                             </div>
                             
                             <?php if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'player'): ?>
@@ -83,6 +91,46 @@ if (isset($_GET['id'])) {
                         </div>
                         
                         <div class="prose prose-invert max-w-none">
+                            <!-- Video Section -->
+                            <?php if (!empty($singleEvent['video_url'])): ?>
+                                <h3 class="text-xl font-semibold mb-3">Event Video</h3>
+                                <div class="bg-gray-700 rounded-lg overflow-hidden mb-6">
+                                    <?php if ($singleEvent['video_type'] === 'youtube'): ?>
+                                        <?php
+                                        // Extract YouTube video ID from URL
+                                        $videoId = $singleEvent['video_url'];
+                                        if (preg_match('/(?:youtube\.com\/.*[?&]v=|youtu\.be\/)([a-zA-Z0-9_-]+)/i', $singleEvent['video_url'], $matches)) {
+                                            $videoId = $matches[1];
+                                        }
+                                        ?>
+                                        <div class="aspect-w-16 aspect-h-9">
+                                            <iframe class="w-full h-64" src="https://www.youtube.com/embed/<?php echo htmlspecialchars($videoId); ?>?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                        </div>
+                                    <?php elseif ($singleEvent['video_type'] === 'twitch'): ?>
+                                        <?php
+                                        // Extract Twitch video ID from URL
+                                        $videoId = $singleEvent['video_url'];
+                                        if (preg_match('/twitch\.tv\/videos\/(\d+)/i', $singleEvent['video_url'], $matches)) {
+                                            $videoId = $matches[1];
+                                        }
+                                        ?>
+                                        <div class="aspect-w-16 aspect-h-9">
+                                            <iframe src="https://player.twitch.tv/?video=<?php echo htmlspecialchars($videoId); ?>&parent=<?php echo parse_url(BASE_URL, PHP_URL_HOST); ?>" frameborder="0" allowfullscreen="true" scrolling="no" class="w-full h-64"></iframe>
+                                        </div>
+                                    <?php elseif ($singleEvent['video_type'] === 'custom'): ?>
+                                        <div class="aspect-w-16 aspect-h-9">
+                                            <?php echo htmlspecialchars_decode($singleEvent['video_url']); ?>
+                                        </div>
+                                    <?php endif; ?>
+                                    
+                                    <?php if (!empty($singleEvent['video_thumbnail']) && $singleEvent['video_type'] !== 'custom'): ?>
+                                        <div class="p-4">
+                                            <img src="<?php echo htmlspecialchars($singleEvent['video_thumbnail']); ?>" alt="Video thumbnail" class="w-full rounded-lg">
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
+                            
                             <h3 class="text-xl font-semibold mb-3">About This Event</h3>
                             <p><?php echo nl2br(htmlspecialchars($singleEvent['description'])); ?></p>
                             
@@ -320,7 +368,24 @@ if (isset($_GET['id'])) {
                                         <h3 class="font-bold text-xl mb-1"><?php echo htmlspecialchars($event['title']); ?></h3>
                                         <span class="text-sm text-gray-400"><?php echo htmlspecialchars($event['game_name']); ?></span>
                                     </div>
-                                    <span class="bg-purple-600 text-white px-2 py-1 rounded-full text-xs">Upcoming</span>
+                                    <div class="flex flex-col items-end">
+                                        <span class="bg-purple-600 text-white px-2 py-1 rounded-full text-xs mb-1">Upcoming</span>
+                                        <?php if (!empty($event['video_url'])): ?>
+                                            <span class="bg-red-600 text-white px-2 py-1 rounded-full text-xs flex items-center">
+                                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"></path>
+                                                </svg>
+                                                Video
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="bg-gray-600 text-white px-2 py-1 rounded-full text-xs flex items-center">
+                                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                                No Video
+                                            </span>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                                 <p class="text-gray-400 text-sm mb-4 line-clamp-2"><?php echo htmlspecialchars($event['description']); ?></p>
                                 <div class="flex items-center text-gray-400 text-sm mb-3">
@@ -359,7 +424,24 @@ if (isset($_GET['id'])) {
                                         <h3 class="font-bold text-xl mb-1"><?php echo htmlspecialchars($event['title']); ?></h3>
                                         <span class="text-sm text-gray-400"><?php echo htmlspecialchars($event['game_name']); ?></span>
                                     </div>
-                                    <span class="bg-green-600 text-white px-2 py-1 rounded-full text-xs">Ongoing</span>
+                                    <div class="flex flex-col items-end">
+                                        <span class="bg-green-600 text-white px-2 py-1 rounded-full text-xs mb-1">Ongoing</span>
+                                        <?php if (!empty($event['video_url'])): ?>
+                                            <span class="bg-red-600 text-white px-2 py-1 rounded-full text-xs flex items-center">
+                                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"></path>
+                                                </svg>
+                                                Video
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="bg-gray-600 text-white px-2 py-1 rounded-full text-xs flex items-center">
+                                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                                No Video
+                                            </span>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                                 <p class="text-gray-400 text-sm mb-4 line-clamp-2"><?php echo htmlspecialchars($event['description']); ?></p>
                                 <div class="flex items-center text-gray-400 text-sm mb-3">
@@ -398,7 +480,24 @@ if (isset($_GET['id'])) {
                                         <h3 class="font-bold text-xl mb-1"><?php echo htmlspecialchars($event['title']); ?></h3>
                                         <span class="text-sm text-gray-400"><?php echo htmlspecialchars($event['game_name']); ?></span>
                                     </div>
-                                    <span class="bg-purple-600 text-white px-2 py-1 rounded-full text-xs">Completed</span>
+                                    <div class="flex flex-col items-end">
+                                        <span class="bg-purple-600 text-white px-2 py-1 rounded-full text-xs mb-1">Completed</span>
+                                        <?php if (!empty($event['video_url'])): ?>
+                                            <span class="bg-red-600 text-white px-2 py-1 rounded-full text-xs flex items-center">
+                                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"></path>
+                                                </svg>
+                                                Video
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="bg-gray-600 text-white px-2 py-1 rounded-full text-xs flex items-center">
+                                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                                No Video
+                                            </span>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                                 <p class="text-gray-400 text-sm mb-4 line-clamp-2"><?php echo htmlspecialchars($event['description']); ?></p>
                                 <div class="flex items-center text-gray-400 text-sm mb-3">

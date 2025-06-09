@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Hôte : 127.0.0.1
--- Généré le : sam. 07 juin 2025 à 19:38
--- Version du serveur : 10.4.32-MariaDB
--- Version de PHP : 8.0.30
+-- Host: 127.0.0.1
+-- Generation Time: Jun 09, 2025 at 04:27 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données : `gaming_events`
+-- Database: `gaming_events`
 --
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `events`
+-- Table structure for table `events`
 --
 
 CREATE TABLE `events` (
@@ -39,24 +39,30 @@ CREATE TABLE `events` (
   `prize_pool` decimal(10,2) DEFAULT NULL,
   `rules` text DEFAULT NULL,
   `status` enum('upcoming','ongoing','completed','cancelled') DEFAULT 'upcoming',
-  `creator` varchar(100) DEFAULT NULL,
   `created_by` int(11) DEFAULT NULL,
+  `creator` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `video_url` varchar(255) DEFAULT NULL,
+  `video_type` enum('youtube','twitch','custom') DEFAULT NULL,
+  `video_thumbnail` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `events`
+-- Dumping data for table `events`
 --
 
-INSERT INTO `events` (`id`, `title`, `description`, `game_id`, `start_date`, `end_date`, `max_participants`, `current_participants`, `prize_pool`, `rules`, `status`, `created_by`, `created_at`, `updated_at`) VALUES
-(1, 'aa', 'aaa', NULL, '2025-06-20 10:10:00', '2025-06-25 14:13:00', 199, 3, 1000.00, 'aaa', 'upcoming', 5, '2025-06-07 09:08:30', '2025-06-07 16:19:12'),
-(2, 'aaa', 'Hello', NULL, '2025-06-07 14:45:00', '2025-06-07 21:51:00', 10, 0, 120.00, '22ZSS', 'completed', 5, '2025-06-07 13:45:32', '2025-06-07 15:25:31');
+INSERT INTO `events` (`id`, `title`, `description`, `game_id`, `start_date`, `end_date`, `max_participants`, `current_participants`, `prize_pool`, `rules`, `status`, `created_by`, `creator`, `created_at`, `updated_at`, `video_url`, `video_type`, `video_thumbnail`) VALUES
+(7, 'aaaa', 'sazfzaef', 1, '2025-06-08 00:01:00', '2025-06-28 00:01:00', 111, 0, 1999.00, 'dazdazdaz', 'upcoming', 0, '', '2025-06-07 23:04:42', '2025-06-07 23:04:42', NULL, NULL, NULL),
+(8, 'eee', 'azfazfza', 1, '2025-06-08 00:06:00', '2025-07-08 00:06:00', 11, 0, 1333.00, 'zdaazdazd', 'upcoming', 0, '', '2025-06-07 23:07:08', '2025-06-07 23:07:08', NULL, NULL, NULL),
+(9, 'zdazfa', 'dzadazd', 2, '2025-06-08 00:10:00', '2025-07-09 00:10:00', 22, 0, 18888.00, 'dazdazdazdazda', 'upcoming', 5, 'ghassntech', '2025-06-07 23:11:10', '2025-06-07 23:11:10', NULL, NULL, NULL),
+(10, 'aa', 'efazfaz', 2, '2025-06-08 23:51:00', '2025-07-03 23:51:00', 12, 0, 1333.00, 'dazdazdf', 'upcoming', 5, 'ghassntech', '2025-06-08 22:53:34', '2025-06-08 22:53:34', 'https://www.youtube.com/watch?v=Sm8D45S18c4', 'custom', NULL),
+(11, 'dzadzad', 'azdazdazdaz', 3, '2025-06-09 15:08:00', '2025-06-27 15:08:00', 123, 0, 1000.00, 'adzadzadza', 'ongoing', 5, 'ghassntech', '2025-06-09 14:08:28', '2025-06-09 14:08:39', 'https://www.youtube.com/watch?v=Sm8D45S18c4', 'custom', 'https://www.behance.net/gallery/213763147/Valorant-3D-Thumbnails-2024?tracking_source=search_projects|valorant+3d+thumbnails&l=0');
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `games`
+-- Table structure for table `games`
 --
 
 CREATE TABLE `games` (
@@ -69,7 +75,7 @@ CREATE TABLE `games` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `games`
+-- Dumping data for table `games`
 --
 
 INSERT INTO `games` (`id`, `name`, `type`, `platform`, `image`, `created_at`) VALUES
@@ -84,7 +90,7 @@ INSERT INTO `games` (`id`, `name`, `type`, `platform`, `image`, `created_at`) VA
 -- --------------------------------------------------------
 
 --
--- Structure de la table `leaderboard`
+-- Table structure for table `leaderboard`
 --
 
 CREATE TABLE `leaderboard` (
@@ -98,7 +104,7 @@ CREATE TABLE `leaderboard` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `registrations`
+-- Table structure for table `registrations`
 --
 
 CREATE TABLE `registrations` (
@@ -112,18 +118,81 @@ CREATE TABLE `registrations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `registrations`
+-- Dumping data for table `registrations`
 --
 
 INSERT INTO `registrations` (`id`, `user_id`, `event_id`, `registration_date`, `status`, `score`, `ranking`) VALUES
-(1, 7, 1, '2025-06-07 12:37:09', 'registered', 0, 0),
-(2, 8, 1, '2025-06-07 15:24:57', 'registered', 0, 0),
-(3, 9, 1, '2025-06-07 16:19:12', 'registered', 0, 0);
+(4, 7, 9, '2025-06-07 23:20:53', 'registered', 0, 0);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `users`
+-- Table structure for table `teams`
+--
+
+CREATE TABLE `teams` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `description` text DEFAULT NULL,
+  `max_members` int(255) NOT NULL,
+  `logo` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `created_by` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `teams`
+--
+
+INSERT INTO `teams` (`id`, `name`, `description`, `max_members`, `logo`, `created_at`, `created_by`) VALUES
+(1, 'Ghassen', 'l lefezf', 0, 'default_team.png', '2025-06-09 12:26:08', 5),
+(2, 'Ghassen', 'l lefezf', 0, '6846d34922ab2_computer.png', '2025-06-09 12:27:53', 5),
+(3, 'Ghassenadzada', 'l lefezf', 0, '6846d47d7f4e9_computer.png', '2025-06-09 12:33:01', 5),
+(4, 'ssss', 'zazdd', 1, '6846daa3ae455_Screenshot 2025-04-11 211636.png', '2025-06-09 12:59:15', 7);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `team_invitations`
+--
+
+CREATE TABLE `team_invitations` (
+  `id` int(11) NOT NULL,
+  `team_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `invited_by` int(11) NOT NULL,
+  `status` enum('pending','accepted','rejected') DEFAULT 'pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `team_members`
+--
+
+CREATE TABLE `team_members` (
+  `id` int(11) NOT NULL,
+  `team_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `role` enum('leader','member') DEFAULT 'member',
+  `joined_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `team_members`
+--
+
+INSERT INTO `team_members` (`id`, `team_id`, `user_id`, `role`, `joined_at`) VALUES
+(3, 3, 7, 'leader', '2025-06-09 12:49:38'),
+(4, 4, 7, 'member', '2025-06-09 12:59:15'),
+(6, 4, 5, 'member', '2025-06-09 13:06:45'),
+(8, 2, 5, 'member', '2025-06-09 14:03:30');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
 --
 
 CREATE TABLE `users` (
@@ -138,21 +207,19 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `users`
+-- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `avatar`, `created_at`, `updated_at`) VALUES
 (5, 'ghassntech', 'ghassntech@gmail.com', '$2y$10$OurIEWTWTGex7tb7WWWBtuiDh80Xw7S118T3HUBfVTAO8568eyv4i', 'admin', '684420338ee55.png', '2025-06-06 23:34:24', '2025-06-07 11:19:15'),
-(7, 'zilla123\'5', 'zilla123@gmail.com', '$2y$10$wzL0wyV.yyG/yveXTdgkO.5TVvhfgWOW6o.qd2ME0xNSWboNBwZ0u', 'player', 'default.png', '2025-06-07 12:25:23', '2025-06-07 15:27:41'),
-(8, 'zilla123OO', 'seifbaar123772@gmail.com', '$2y$10$oVy3bZUAFi06427m0SiXv.F4AzC11WYDxGFiAItot/yucnzYcsz1K', 'player', 'default.png', '2025-06-07 15:24:48', '2025-06-07 15:24:48'),
-(9, 'user1', 'wahbijouini169@gmail.com', '$2y$10$pvHMdxW0SuBYrHABXwOZyufL/qprjKN94RPYy8f7bwP7U6Pii8.te', 'player', 'default.png', '2025-06-07 16:17:59', '2025-06-07 16:17:59');
+(7, 'zilla123\'5', 'zilla123@gmail.com', '$2y$10$wzL0wyV.yyG/yveXTdgkO.5TVvhfgWOW6o.qd2ME0xNSWboNBwZ0u', 'player', 'default.png', '2025-06-07 12:25:23', '2025-06-07 15:27:41');
 
 --
--- Index pour les tables déchargées
+-- Indexes for dumped tables
 --
 
 --
--- Index pour la table `events`
+-- Indexes for table `events`
 --
 ALTER TABLE `events`
   ADD PRIMARY KEY (`id`),
@@ -160,13 +227,13 @@ ALTER TABLE `events`
   ADD KEY `fk_event_game` (`game_id`);
 
 --
--- Index pour la table `games`
+-- Indexes for table `games`
 --
 ALTER TABLE `games`
   ADD PRIMARY KEY (`id`);
 
 --
--- Index pour la table `leaderboard`
+-- Indexes for table `leaderboard`
 --
 ALTER TABLE `leaderboard`
   ADD PRIMARY KEY (`id`),
@@ -174,7 +241,7 @@ ALTER TABLE `leaderboard`
   ADD KEY `event_id` (`event_id`);
 
 --
--- Index pour la table `registrations`
+-- Indexes for table `registrations`
 --
 ALTER TABLE `registrations`
   ADD PRIMARY KEY (`id`),
@@ -182,7 +249,31 @@ ALTER TABLE `registrations`
   ADD KEY `event_id` (`event_id`);
 
 --
--- Index pour la table `users`
+-- Indexes for table `teams`
+--
+ALTER TABLE `teams`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `created_by` (`created_by`);
+
+--
+-- Indexes for table `team_invitations`
+--
+ALTER TABLE `team_invitations`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `team_id` (`team_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `invited_by` (`invited_by`);
+
+--
+-- Indexes for table `team_members`
+--
+ALTER TABLE `team_members`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_team_member` (`team_id`,`user_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
@@ -190,63 +281,101 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- AUTO_INCREMENT pour les tables déchargées
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT pour la table `events`
+-- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT pour la table `games`
+-- AUTO_INCREMENT for table `games`
 --
 ALTER TABLE `games`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT pour la table `leaderboard`
+-- AUTO_INCREMENT for table `leaderboard`
 --
 ALTER TABLE `leaderboard`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT pour la table `registrations`
+-- AUTO_INCREMENT for table `registrations`
 --
 ALTER TABLE `registrations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT pour la table `users`
+-- AUTO_INCREMENT for table `teams`
+--
+ALTER TABLE `teams`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `team_invitations`
+--
+ALTER TABLE `team_invitations`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `team_members`
+--
+ALTER TABLE `team_members`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- Contraintes pour les tables déchargées
+-- Constraints for dumped tables
 --
 
 --
--- Contraintes pour la table `events`
+-- Constraints for table `events`
 --
 ALTER TABLE `events`
-  ADD CONSTRAINT `events_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `fk_event_game` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE SET NULL;
 
 --
--- Contraintes pour la table `leaderboard`
+-- Constraints for table `leaderboard`
 --
 ALTER TABLE `leaderboard`
   ADD CONSTRAINT `leaderboard_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `leaderboard_ibfk_2` FOREIGN KEY (`event_id`) REFERENCES `events` (`id`);
 
 --
--- Contraintes pour la table `registrations`
+-- Constraints for table `registrations`
 --
 ALTER TABLE `registrations`
   ADD CONSTRAINT `registrations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `registrations_ibfk_2` FOREIGN KEY (`event_id`) REFERENCES `events` (`id`);
+
+--
+-- Constraints for table `teams`
+--
+ALTER TABLE `teams`
+  ADD CONSTRAINT `teams_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `team_invitations`
+--
+ALTER TABLE `team_invitations`
+  ADD CONSTRAINT `team_invitations_ibfk_1` FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `team_invitations_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `team_invitations_ibfk_3` FOREIGN KEY (`invited_by`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `team_members`
+--
+ALTER TABLE `team_members`
+  ADD CONSTRAINT `team_members_ibfk_1` FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `team_members_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

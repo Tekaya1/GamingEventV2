@@ -98,14 +98,49 @@ class Event
     }
 
     // Créer un nouvel événement
-    public function createEvent($data)
-    {
-        $stmt = $this->db->prepare("
-            INSERT INTO events (title, description, game_id, start_date, end_date, max_participants, prize_pool, rules, status, creator, created_by)
-            VALUES (:title, :description, :game_id, :start_date, :end_date, :max_participants, :prize_pool, :rules, :status, :creator, :created_by)
-        ");
-        return $stmt->execute($data);
-    }
+   public function createEvent($data)
+{
+    $stmt = $this->db->prepare("
+        INSERT INTO events (
+            title, 
+            description, 
+            game_id, 
+            start_date, 
+            end_date, 
+            max_participants, 
+            prize_pool, 
+            rules, 
+            status, 
+            creator, 
+            created_by,
+            video_url,
+            video_type,
+            video_thumbnail
+        ) VALUES (
+            :title, 
+            :description, 
+            :game_id, 
+            :start_date, 
+            :end_date, 
+            :max_participants, 
+            :prize_pool, 
+            :rules, 
+            :status, 
+            :creator, 
+            :created_by,
+            :video_url,
+            :video_type,
+            :video_thumbnail
+        )
+    ");
+    
+    // Ensure all video fields are set in the data array
+    $data['video_url'] = $data['video_url'] ?? null;
+    $data['video_type'] = $data['video_type'] ?? null;
+    $data['video_thumbnail'] = $data['video_thumbnail'] ?? null;
+    
+    return $stmt->execute($data);
+}
     //registerForEvent
     public function registerForEvent($userId, $eventId)
     {
@@ -125,24 +160,32 @@ class Event
 
     // Mettre à jour un événement
     public function updateEvent($id, $data)
-    {
-        $query = "UPDATE events SET 
-            title = :title,
-            description = :description,
-            game_id = :game_id,
-            start_date = :start_date,
-            end_date = :end_date,
-            max_participants = :max_participants,
-            prize_pool = :prize_pool,
-            rules = :rules,
-            status = :status
-        WHERE id = :id";
+{
+    $query = "UPDATE events SET 
+        title = :title,
+        description = :description,
+        game_id = :game_id,
+        start_date = :start_date,
+        end_date = :end_date,
+        max_participants = :max_participants,
+        prize_pool = :prize_pool,
+        rules = :rules,
+        status = :status,
+        video_url = :video_url,
+        video_type = :video_type,
+        video_thumbnail = :video_thumbnail
+    WHERE id = :id";
 
-        $stmt = $this->db->prepare($query);
-        $data['id'] = $id;
+    $stmt = $this->db->prepare($query);
+    
+    // Ensure all video fields are set in the data array
+    $data['video_url'] = $data['video_url'] ?? null;
+    $data['video_type'] = $data['video_type'] ?? null;
+    $data['video_thumbnail'] = $data['video_thumbnail'] ?? null;
+    $data['id'] = $id;
 
-        return $stmt->execute($data);
-    }
+    return $stmt->execute($data);
+}
 
     // Récupérer les événements par statut (ex : ongoing, upcoming)
     public function getEventsByStatus($status)
