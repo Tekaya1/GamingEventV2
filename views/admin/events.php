@@ -70,16 +70,14 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <div>
-                                <label class="block text-gray-300 text-sm font-bold mb-2" for="start_date">Start Date &
-                                    Time</label>
+                                <label class="block text-gray-300 text-sm font-bold mb-2" for="start_date">Start Date &amp; Time</label>
                                 <input class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="start_date"
                                     name="start_date" type="datetime-local"
                                     value="<?php echo isset($editEvent['start_date']) ? date('Y-m-d\TH:i', strtotime($editEvent['start_date'])) : ''; ?>"
                                     required>
                             </div>
                             <div>
-                                <label class="block text-gray-300 text-sm font-bold mb-2" for="end_date">End Date &
-                                    Time</label>
+                                <label class="block text-gray-300 text-sm font-bold mb-2" for="end_date">End Date &amp; Time</label>
                                 <input class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="end_date"
                                     name="end_date" type="datetime-local"
                                     value="<?php echo isset($editEvent['end_date']) ? date('Y-m-d\TH:i', strtotime($editEvent['end_date'])) : ''; ?>"
@@ -89,15 +87,13 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <div>
-                                <label class="block text-gray-300 text-sm font-bold mb-2" for="max_participants">Max
-                                    Participants</label>
+                                <label class="block text-gray-300 text-sm font-bold mb-2" for="max_participants">Max Participants</label>
                                 <input class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white"
                                     id="max_participants" name="max_participants" type="number" min="1"
                                     value="<?php echo isset($editEvent['max_participants']) ? $editEvent['max_participants'] : ''; ?>">
                             </div>
                             <div>
-                                <label class="block text-gray-300 text-sm font-bold mb-2" for="prize_pool">Prize Pool
-                                    ($)</label>
+                                <label class="block text-gray-300 text-sm font-bold mb-2" for="prize_pool">Prize Pool ($)</label>
                                 <input class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="prize_pool"
                                     name="prize_pool" type="number" min="0" step="0.01"
                                     value="<?php echo isset($editEvent['prize_pool']) ? $editEvent['prize_pool'] : '0'; ?>"
@@ -105,26 +101,13 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
                             </div>
                         </div>
 
-                        <?php if ($_GET['action'] === 'edit'): ?>
-                            <div class="mb-6">
-                                <label class="block text-gray-300 text-sm font-bold mb-2" for="status">Status</label>
-                                <select class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="status"
-                                    name="status" required>
-                                    <option value="upcoming" <?php echo (isset($editEvent['status']) && $editEvent['status'] === 'upcoming') ? 'selected' : ''; ?>>Upcoming</option>
-                                    <option value="ongoing" <?php echo (isset($editEvent['status']) && $editEvent['status'] === 'ongoing') ? 'selected' : ''; ?>>Ongoing</option>
-                                    <option value="completed" <?php echo (isset($editEvent['status']) && $editEvent['status'] === 'completed') ? 'selected' : ''; ?>>Completed</option>
-                                    <option value="cancelled" <?php echo (isset($editEvent['status']) && $editEvent['status'] === 'cancelled') ? 'selected' : ''; ?>>Cancelled</option>
-                                </select>
-                            </div>
-                        <?php endif; ?>
-
                         <div class="mb-6">
                             <label class="block text-gray-300 text-sm font-bold mb-2" for="rules">Rules</label>
                             <textarea class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="rules"
                                 name="rules" rows="6"
                                 required><?php echo isset($editEvent['rules']) ? htmlspecialchars($editEvent['rules']) : ''; ?></textarea>
                         </div>
-                        <!-- Add this section after the rules textarea in your form -->
+
                         <div class="mb-6">
                             <label class="block text-gray-300 text-sm font-bold mb-2" for="video_type">Video Type</label>
                             <select class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="video_type"
@@ -138,29 +121,20 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
 
                         <div class="mb-6 video-url-field"
                             style="<?php echo (!isset($editEvent['video_type']) || empty($editEvent['video_type']) ? 'display: none;' : ''); ?>">
-                            <label class="block text-gray-300 text-sm font-bold mb-2" for="video_url">Video URL/Embed
-                                Code</label>
+                            <label class="block text-gray-300 text-sm font-bold mb-2" for="video_url">Video URL/Embed Code</label>
                             <input class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="video_url"
                                 name="video_url" type="text"
                                 value="<?php echo isset($editEvent['video_url']) ? htmlspecialchars($editEvent['video_url']) : ''; ?>">
-                            <p class="text-gray-400 text-xs mt-1">
-                                For YouTube: Enter video ID (e.g., dQw4w9WgXcQ) or full URL<br>
-                                For Twitch: Enter video ID or full URL<br>
-                                For Custom: Enter full embed code
-                            </p>
                         </div>
 
                         <div class="mb-6 video-thumbnail-field"
                             style="<?php echo (!isset($editEvent['video_type']) || empty($editEvent['video_type']) ? 'display: none;' : ''); ?>">
-                            <label class="block text-gray-300 text-sm font-bold mb-2" for="video_thumbnail">Video
-                                Thumbnail</label>
+                            <label class="block text-gray-300 text-sm font-bold mb-2" for="video_thumbnail">Video Thumbnail</label>
                             <input class="bg-gray-700 border-2 rounded w-full py-3 px-4 text-white" id="video_thumbnail"
                                 name="video_thumbnail" type="text"
                                 value="<?php echo isset($editEvent['video_thumbnail']) ? htmlspecialchars($editEvent['video_thumbnail']) : ''; ?>">
-                            <p class="text-gray-400 text-xs mt-1">URL to a custom thumbnail image (optional)</p>
                         </div>
 
-                        <!-- Add this JavaScript at the bottom of the page -->
                         <script>
                             document.getElementById('video_type').addEventListener('change', function () {
                                 const videoUrlField = document.querySelector('.video-url-field');
@@ -177,10 +151,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
                         </script>
 
                         <div class="flex justify-end space-x-4">
-                            <a href="events.php"
-                                class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition">Cancel</a>
-                            <button type="submit"
-                                class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition">
+                            <a href="events.php" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition">Cancel</a>
+                            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition">
                                 <?php echo $_GET['action'] === 'create' ? 'Create Event' : 'Update Event'; ?>
                             </button>
                         </div>
@@ -220,6 +192,13 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
                                             <input type="hidden" name="id" value="<?php echo $ev['id']; ?>">
                                             <button type="submit" class="text-red-500 hover:underline">Delete</button>
                                         </form>
+                                        <!-- Add the register button -->
+                                        <?php if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'player'): ?>
+                                            <form action="../../controllers/eventController.php?action=register" method="POST" class="inline">
+                                                <input type="hidden" name="event_id" value="<?php echo $ev['id']; ?>">
+                                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition">Register</button>
+                                            </form>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

@@ -17,7 +17,7 @@ class Event
     }
 
     // Obtenir tous les événements avec le nom du jeu associé
-    
+
     public function getAllEvents($status = null)
     {
         if ($status !== null) {
@@ -98,9 +98,9 @@ class Event
     }
 
     // Créer un nouvel événement
-   public function createEvent($data)
-{
-    $stmt = $this->db->prepare("
+    public function createEvent($data)
+    {
+        $stmt = $this->db->prepare("
         INSERT INTO events (
             title, 
             description, 
@@ -133,23 +133,16 @@ class Event
             :video_thumbnail
         )
     ");
-    
-    // Ensure all video fields are set in the data array
-    $data['video_url'] = $data['video_url'] ?? null;
-    $data['video_type'] = $data['video_type'] ?? null;
-    $data['video_thumbnail'] = $data['video_thumbnail'] ?? null;
-    
-    return $stmt->execute($data);
-}
-    //registerForEvent
-    public function registerForEvent($userId, $eventId)
-    {
-        $stmt = $this->db->prepare("
-            INSERT INTO registrations (user_id, event_id)
-            VALUES (?, ?)
-        ");
-        return $stmt->execute([$userId, $eventId]);
+
+        // Ensure all video fields are set in the data array
+        $data['video_url'] = $data['video_url'] ?? null;
+        $data['video_type'] = $data['video_type'] ?? null;
+        $data['video_thumbnail'] = $data['video_thumbnail'] ?? null;
+
+        return $stmt->execute($data);
     }
+
+
 
     // Supprimer un événement
     public function deleteEvent($id)
@@ -160,8 +153,8 @@ class Event
 
     // Mettre à jour un événement
     public function updateEvent($id, $data)
-{
-    $query = "UPDATE events SET 
+    {
+        $query = "UPDATE events SET 
         title = :title,
         description = :description,
         game_id = :game_id,
@@ -176,16 +169,16 @@ class Event
         video_thumbnail = :video_thumbnail
     WHERE id = :id";
 
-    $stmt = $this->db->prepare($query);
-    
-    // Ensure all video fields are set in the data array
-    $data['video_url'] = $data['video_url'] ?? null;
-    $data['video_type'] = $data['video_type'] ?? null;
-    $data['video_thumbnail'] = $data['video_thumbnail'] ?? null;
-    $data['id'] = $id;
+        $stmt = $this->db->prepare($query);
 
-    return $stmt->execute($data);
-}
+        // Ensure all video fields are set in the data array
+        $data['video_url'] = $data['video_url'] ?? null;
+        $data['video_type'] = $data['video_type'] ?? null;
+        $data['video_thumbnail'] = $data['video_thumbnail'] ?? null;
+        $data['id'] = $id;
+
+        return $stmt->execute($data);
+    }
 
     // Récupérer les événements par statut (ex : ongoing, upcoming)
     public function getEventsByStatus($status)
@@ -198,5 +191,28 @@ class Event
         ");
         $stmt->execute([$status]);
         return $stmt->fetchAll();
+    }
+
+
+    //registerForEvent
+    public function registerForEvent($user_id, $event_id)
+    {
+        // Vérifier si l'utilisateur est déjà inscrit
+        $stmt = $this->db->prepare("SELECT * FROM registrations WHERE event_id = ? AND user_id = ?");
+        $stmt->execute([$event_id, $user_id]);
+
+        if ($stmt->rowCount() == 0) {
+            // Inscrire l'utilisateur dans l'événement
+            $stmt = $this->db->prepare("INSERT INTO registrations (event_id, user_id) VALUES (?, ?)");
+            $stmt->execute([$event_id, $user_id]);
+
+            // Incrémenter le nombre de participants dans l'événement
+            $stmt = $this->db->prepare("UPDATE events SET current_participants = current_participants + 1 WHERE id = ?");
+            $stmt->execute([$event_id]);
+
+            return true; // L'inscription a réussi
+        }
+
+        return false; // L'utilisateur est déjà inscrit
     }
 }
