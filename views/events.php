@@ -123,11 +123,11 @@ if (isset($_GET['id'])) {
                                         </div>
                                     <?php endif; ?>
                                     
-                                    <?php if (!empty($singleEvent['video_thumbnail']) && $singleEvent['video_type'] !== 'custom'): ?>
+                                    <!-- <?php if (!empty($singleEvent['video_thumbnail']) && $singleEvent['video_type'] !== 'custom'): ?>
                                         <div class="p-4">
                                             <img src="<?php echo htmlspecialchars($singleEvent['video_thumbnail']); ?>" alt="Video thumbnail" class="w-full rounded-lg">
                                         </div>
-                                    <?php endif; ?>
+                                    <?php endif; ?> -->
                                 </div>
                             <?php endif; ?>
                             

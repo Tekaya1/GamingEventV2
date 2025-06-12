@@ -122,6 +122,36 @@ class User
 
         return $stmt->rowCount() > 0;
     }
+    public function searchUsers($query, $team_id)
+    {
+        try {
+            $stmt = $this->db->prepare("
+            SELECT id, username, avatar 
+            FROM users 
+            WHERE username LIKE :query
+            AND id NOT IN (
+                SELECT user_id FROM team_members WHERE team_id = :team_id
+            )
+            AND id NOT IN (
+                SELECT recipient_id FROM team_invitations 
+                WHERE team_id = :team_id2 AND status = 'pending'
+            )
+            LIMIT 10
+        ");
+
+            $stmt->bindValue(':query', '%' . $query . '%', PDO::PARAM_STR);
+            $stmt->bindValue(':team_id', $team_id, PDO::PARAM_INT);
+            $stmt->bindValue(':team_id2', $team_id, PDO::PARAM_INT);
+
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Database error in searchUsers: " . $e->getMessage());
+            return [];
+        }
+    }
+
+
 
     public function emailExists($email)
     {
@@ -134,9 +164,24 @@ class User
     }
 
     // Getters
-    public function getId()       { return $this->id; }
-    public function getUsername() { return $this->username; }
-    public function getEmail()    { return $this->email; }
-    public function getRole()     { return $this->role; }
-    public function getAvatar()   { return $this->avatar; }
+    public function getId()
+    {
+        return $this->id;
+    }
+    public function getUsername()
+    {
+        return $this->username;
+    }
+    public function getEmail()
+    {
+        return $this->email;
+    }
+    public function getRole()
+    {
+        return $this->role;
+    }
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
 }

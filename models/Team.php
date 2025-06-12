@@ -54,7 +54,7 @@ class Team
     // Get team members
     public function getTeamMembers($teamId)
     {
-            $stmt = $this->db->prepare("
+        $stmt = $this->db->prepare("
                 SELECT tm.*, u.username, u.avatar
                 FROM team_members tm
                 JOIN users u ON tm.user_id = u.id
@@ -110,6 +110,104 @@ class Team
     public function getLastInsertId()
     {
         return $this->db->lastInsertId();
+    }
+
+    public function updateMemberRole($teamId, $memberId, $newRole, $requesterId)
+    {
+        // Verify requester is team leader
+        if (!$this->isTeamLeader($teamId, $requesterId)) {
+            return false;
+        }
+
+        // Validate role
+        if (!in_array($newRole, ['member', 'co-leader', 'leader'])) {
+            return false;
+        }
+
+        // Special handling for leader transfers
+        if ($newRole === 'leader') {
+            // Demote current leader first
+            $this->db->prepare("
+            UPDATE team_members 
+            SET role = 'member' 
+            WHERE team_id = ? AND role = 'leader'
+        ")->execute([$teamId]);
+        }
+
+        $stmt = $this->db->prepare("
+        UPDATE team_members 
+        SET role = ? 
+        WHERE team_id = ? AND user_id = ?
+    ");
+        return $stmt->execute([$newRole, $teamId, $memberId]);
+    }
+    public function sendInvitation($teamId, $senderId, $recipientId)
+    {
+        // Check if user is already a member
+        if ($this->isTeamMember($teamId, $recipientId)) {
+            return false;
+        }
+
+        // Check if invitation already exists
+        $stmt = $this->db->prepare("
+        SELECT id FROM team_invitations 
+        WHERE team_id = ? AND recipient_id = ? AND status = 'pending'
+    ");
+        $stmt->execute([$teamId, $recipientId]);
+        if ($stmt->fetch()) {
+            return false;
+        }
+
+        $stmt = $this->db->prepare("
+        INSERT INTO team_invitations 
+        (team_id, sender_id, recipient_id, status, created_at) 
+        VALUES (?, ?, ?, 'pending', NOW())
+    ");
+        return $stmt->execute([$teamId, $senderId, $recipientId]);
+    }
+
+    public function getPendingInvitations($teamId)
+    {
+        $stmt = $this->db->prepare("
+        SELECT ti.*, u.username as recipient_name, u.avatar as recipient_avatar
+        FROM team_invitations ti
+        JOIN users u ON ti.recipient_id = u.id
+        WHERE ti.team_id = ? AND ti.status = 'pending'
+    ");
+        $stmt->execute([$teamId]);
+        return $stmt->fetchAll();
+    }
+
+    public function cancelInvitation($inviteId, $teamId, $userId)
+    {
+        // Verify the user is the team leader
+        if (!$this->isTeamLeader($teamId, $userId)) {
+            return false;
+        }
+
+        $stmt = $this->db->prepare("
+        DELETE FROM team_invitations 
+        WHERE id = ? AND team_id = ?
+    ");
+        return $stmt->execute([$inviteId, $teamId]);
+    }
+    public function removeMember($teamId, $memberId, $requesterId)
+    {
+        // Verify requester is team leader
+        if (!$this->isTeamLeader($teamId, $requesterId)) {
+            return false;
+        }
+
+        // Can't remove yourself as leader (should use leaveTeam instead)
+        if ($memberId == $requesterId) {
+            return false;
+        }
+
+        $stmt = $this->db->prepare("
+        DELETE FROM team_members 
+        WHERE team_id = ? AND user_id = ?
+    ");
+        return $stmt->execute([$teamId, $memberId]);
     }
 }
 ?>
