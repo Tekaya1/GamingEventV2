@@ -1,3 +1,3 @@
 <?php
 // config/config.php
-define('BASE_URL', 'http://localhost/GamingEventV2/');
+define('BASE_URL', 'http://localhost/GamingE/');
