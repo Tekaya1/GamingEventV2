@@ -341,13 +341,13 @@ if (isset($_GET['id'])) {
         <div class="bg-gray-800 rounded-lg p-4 mb-8">
             <div class="flex flex-wrap items-center justify-between gap-4">
                 <div class="flex space-x-2">
-                    <button class="px-4 py-2 rounded-lg bg-purple-600 text-white">All Events</button>
-                    <button class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-300 transition">Upcoming</button>
-                    <button class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-300 transition">Ongoing</button>
-                    <button class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-300 transition">Completed</button>
+                    <button id="filter-all" class="px-4 py-2 rounded-lg bg-purple-600 text-white">All Events</button>
+                    <button id="filter-upcoming" class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-300 transition">Upcoming</button>
+                    <button id="filter-ongoing" class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-300 transition">Ongoing</button>
+                    <button id="filter-completed" class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-300 transition">Completed</button>
                 </div>
                 <div class="relative w-full md:w-auto">
-                    <input type="text" placeholder="Search events..." class="bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 pl-10 w-full focus:outline-none focus:border-purple-500">
+                    <input id="event-search" type="text" placeholder="Search events..." class="bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 pl-10 w-full focus:outline-none focus:border-purple-500">
                     <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
@@ -357,16 +357,16 @@ if (isset($_GET['id'])) {
         
         <!-- Upcoming Events -->
         <?php if (!empty($upcomingEvents)): ?>
-            <div class="mb-12">
+            <div class="mb-12 event-section" data-category="upcoming">
                 <h2 class="text-2xl font-bold mb-6 border-b border-gray-700 pb-2">Upcoming Events</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="upcoming-events-list">
                     <?php foreach ($upcomingEvents as $event): ?>
-                        <div class="bg-gray-800 rounded-lg overflow-hidden border-l-4 border-purple-500 hover:border-purple-400 transition">
+                        <div class="bg-gray-800 rounded-lg overflow-hidden border-l-4 border-purple-500 hover:border-purple-400 transition event-card" data-category="upcoming">
                             <div class="p-6">
                                 <div class="flex justify-between items-start mb-4">
                                     <div>
-                                        <h3 class="font-bold text-xl mb-1"><?php echo htmlspecialchars($event['title']); ?></h3>
-                                        <span class="text-sm text-gray-400"><?php echo htmlspecialchars($event['game_name']); ?></span>
+                                        <h3 class="font-bold text-xl mb-1 event-title"><?php echo htmlspecialchars($event['title']); ?></h3>
+                                        <span class="text-sm text-gray-400 event-game"><?php echo htmlspecialchars($event['game_name']); ?></span>
                                     </div>
                                     <div class="flex flex-col items-end">
                                         <span class="bg-purple-600 text-white px-2 py-1 rounded-full text-xs mb-1">Upcoming</span>
@@ -413,16 +413,16 @@ if (isset($_GET['id'])) {
         
         <!-- Ongoing Events -->
         <?php if (!empty($ongoingEvents)): ?>
-            <div class="mb-12">
+            <div class="mb-12 event-section" data-category="ongoing">
                 <h2 class="text-2xl font-bold mb-6 border-b border-gray-700 pb-2">Ongoing Events</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="ongoing-events-list">
                     <?php foreach ($ongoingEvents as $event): ?>
-                        <div class="bg-gray-800 rounded-lg overflow-hidden border-l-4 border-green-500 hover:border-green-400 transition">
+                        <div class="bg-gray-800 rounded-lg overflow-hidden border-l-4 border-green-500 hover:border-green-400 transition event-card" data-category="ongoing">
                             <div class="p-6">
                                 <div class="flex justify-between items-start mb-4">
                                     <div>
-                                        <h3 class="font-bold text-xl mb-1"><?php echo htmlspecialchars($event['title']); ?></h3>
-                                        <span class="text-sm text-gray-400"><?php echo htmlspecialchars($event['game_name']); ?></span>
+                                        <h3 class="font-bold text-xl mb-1 event-title"><?php echo htmlspecialchars($event['title']); ?></h3>
+                                        <span class="text-sm text-gray-400 event-game"><?php echo htmlspecialchars($event['game_name']); ?></span>
                                     </div>
                                     <div class="flex flex-col items-end">
                                         <span class="bg-green-600 text-white px-2 py-1 rounded-full text-xs mb-1">Ongoing</span>
@@ -469,16 +469,16 @@ if (isset($_GET['id'])) {
         
         <!-- Completed Events -->
         <?php if (!empty($completedEvents)): ?>
-            <div class="mb-12">
+            <div class="mb-12 event-section" data-category="completed">
                 <h2 class="text-2xl font-bold mb-6 border-b border-gray-700 pb-2">Completed Events</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="completed-events-list">
                     <?php foreach ($completedEvents as $event): ?>
-                        <div class="bg-gray-800 rounded-lg overflow-hidden border-l-4 border-purple-500 hover:border-purple-400 transition">
+                        <div class="bg-gray-800 rounded-lg overflow-hidden border-l-4 border-purple-500 hover:border-purple-400 transition event-card" data-category="completed">
                             <div class="p-6">
                                 <div class="flex justify-between items-start mb-4">
                                     <div>
-                                        <h3 class="font-bold text-xl mb-1"><?php echo htmlspecialchars($event['title']); ?></h3>
-                                        <span class="text-sm text-gray-400"><?php echo htmlspecialchars($event['game_name']); ?></span>
+                                        <h3 class="font-bold text-xl mb-1 event-title"><?php echo htmlspecialchars($event['title']); ?></h3>
+                                        <span class="text-sm text-gray-400 event-game"><?php echo htmlspecialchars($event['game_name']); ?></span>
                                     </div>
                                     <div class="flex flex-col items-end">
                                         <span class="bg-purple-600 text-white px-2 py-1 rounded-full text-xs mb-1">Completed</span>
@@ -526,3 +526,68 @@ if (isset($_GET['id'])) {
 <?php endif; ?>
 
 <?php include '../includes/footer.php'; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('event-search');
+    const eventCards = document.querySelectorAll('.event-card');
+    const filterAll = document.getElementById('filter-all');
+    const filterUpcoming = document.getElementById('filter-upcoming');
+    const filterOngoing = document.getElementById('filter-ongoing');
+    const filterCompleted = document.getElementById('filter-completed');
+    const eventSections = document.querySelectorAll('.event-section');
+
+    function filterEvents() {
+        const query = searchInput.value.toLowerCase();
+        eventCards.forEach(card => {
+            const title = card.querySelector('.event-title').textContent.toLowerCase();
+            const game = card.querySelector('.event-game').textContent.toLowerCase();
+            if (title.includes(query) || game.includes(query)) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    searchInput.addEventListener('input', filterEvents);
+
+    function showCategory(category) {
+        eventSections.forEach(section => {
+            if (category === 'all' || section.getAttribute('data-category') === category) {
+                section.style.display = '';
+            } else {
+                section.style.display = 'none';
+            }
+        });
+    }
+
+    filterAll.addEventListener('click', function() {
+        showCategory('all');
+        filterAll.classList.add('bg-purple-600', 'text-white');
+        filterUpcoming.classList.remove('bg-purple-600', 'text-white');
+        filterOngoing.classList.remove('bg-green-600', 'text-white');
+        filterCompleted.classList.remove('bg-purple-600', 'text-white');
+    });
+    filterUpcoming.addEventListener('click', function() {
+        showCategory('upcoming');
+        filterAll.classList.remove('bg-purple-600', 'text-white');
+        filterUpcoming.classList.add('bg-purple-600', 'text-white');
+        filterOngoing.classList.remove('bg-green-600', 'text-white');
+        filterCompleted.classList.remove('bg-purple-600', 'text-white');
+    });
+    filterOngoing.addEventListener('click', function() {
+        showCategory('ongoing');
+        filterAll.classList.remove('bg-purple-600', 'text-white');
+        filterUpcoming.classList.remove('bg-purple-600', 'text-white');
+        filterOngoing.classList.add('bg-green-600', 'text-white');
+        filterCompleted.classList.remove('bg-purple-600', 'text-white');
+    });
+    filterCompleted.addEventListener('click', function() {
+        showCategory('completed');
+        filterAll.classList.remove('bg-purple-600', 'text-white');
+        filterUpcoming.classList.remove('bg-purple-600', 'text-white');
+        filterOngoing.classList.remove('bg-green-600', 'text-white');
+        filterCompleted.classList.add('bg-purple-600', 'text-white');
+    });
+});
+</script>

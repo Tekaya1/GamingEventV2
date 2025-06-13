@@ -92,7 +92,7 @@ $upcomingEvents = $event->getAllEvents('upcoming');
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold">Player Dashboard</h2>
                     <div class="relative">
-                        <input type="text" placeholder="Search events..." class="bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 pl-10 focus:outline-none focus:border-purple-500">
+                        <input id="event-search" type="text" placeholder="Search events..." class="bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 pl-10 focus:outline-none focus:border-purple-500">
                         <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
@@ -102,14 +102,14 @@ $upcomingEvents = $event->getAllEvents('upcoming');
                 <!-- Upcoming Events Section -->
                 <div class="mb-8">
                     <h3 class="text-xl font-semibold mb-4 border-b border-gray-700 pb-2">Upcoming Events</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="upcoming-events-list">
                         <?php foreach (array_slice($upcomingEvents, 0, 4) as $event): ?>
-                            <div class="bg-gray-700 rounded-lg overflow-hidden border-l-4 border-purple-500">
+                            <div class="event-card bg-gray-700 rounded-lg overflow-hidden border-l-4 border-purple-500">
                                 <div class="p-4">
                                     <div class="flex justify-between items-start">
                                         <div>
-                                            <h4 class="font-bold text-lg"><?php echo htmlspecialchars($event['title']); ?></h4>
-                                            <p class="text-gray-400 text-sm"><?php echo htmlspecialchars($event['game_name']); ?></p>
+                                            <h4 class="event-title font-bold text-lg"><?php echo htmlspecialchars($event['title']); ?></h4>
+                                            <p class="event-game text-gray-400 text-sm"><?php echo htmlspecialchars($event['game_name']); ?></p>
                                         </div>
                                         <span class="bg-purple-600 text-white px-2 py-1 rounded-full text-xs"><?php echo htmlspecialchars($event['status']); ?></span>
                                     </div>
@@ -224,3 +224,22 @@ $upcomingEvents = $event->getAllEvents('upcoming');
 </div>
 
 <?php include '../../includes/footer.php'; ?>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('event-search');
+    const eventCards = document.querySelectorAll('#upcoming-events-list .event-card');
+    searchInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase();
+        eventCards.forEach(card => {
+            const title = card.querySelector('.event-title').textContent.toLowerCase();
+            const game = card.querySelector('.event-game').textContent.toLowerCase();
+            if (title.includes(query) || game.includes(query)) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
